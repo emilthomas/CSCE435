@@ -25,23 +25,23 @@ int * initialize_list(int list_size, int type, int my_id, int num_procs) {
     int j;
     int * list = (int *) calloc(list_size, sizeof(int));
     switch (type) {
-        case -1:    // Elements are in descending order
-            for (j = 0; j < list_size; j++) {
-                list[j] = (num_procs-my_id)*list_size-j;
-            }
-            break;
-        case -2:    // Elements are in ascending order
-            for (j = 0; j < list_size; j++) {
-                list[j] = my_id*list_size+j+1;
-            }
-            break;
-        default:
-            srand48(type + my_id);
-            list[0] = lrand48() % 100;
-            for (j = 1; j < list_size; j++) {
-                list[j] = lrand48() % 100;
-            }
-            break;
+	case -1:	// Elements are in descending order
+	    for (j = 0; j < list_size; j++) {
+		    list[j] = (num_procs-my_id)*list_size-j;
+	        }
+	    break;
+	case -2:	// Elements are in ascending order
+	    for (j = 0; j < list_size; j++) {
+		    list[j] = my_id*list_size+j+1;
+	        }
+	    break;
+	default: 
+	    srand48(type + my_id); 
+	    list[0] = lrand48() % 100;
+	        for (j = 1; j < list_size; j++) {
+		    list[j] = lrand48() % 100;
+	        }
+	    break;
     }
     return list;
 }
@@ -74,21 +74,22 @@ void check_list(int *list, int list_size, int my_id, int num_procs) {
     // (error is set to 1 if a pair of elements is not sorted correctly)
     local_error = 0;
     if (list_size > 0) {
-        if (list[0] > min_nbr) local_error = 1;
-        for (j = 1; j < list_size; j++) {
-            if (list[j] > list[j-1]) local_error = 1;
-        }
-        my_min = list[list_size-1];
+	    if (list[0] > min_nbr) { local_error = 1; printf("DDDDDDDDD, %d, %d\n\n\n", list[0], min_nbr);}
+	    for (j = 1; j < list_size; j++){
+	        if (list[j] > list[j-1]) local_error = 1;
+	    }
+	    my_min = list[list_size-1];
         my_max = list[0];
-    } else {                    // Modified 6-21-2017
+    }
+    else {                    // Modified 6-21-2017
         my_min = 999999999;            // Modified 6-21-2017
     }
     if (VERBOSE > 1) {
         printf("[Proc: %0d] check_list: local_error = %d\n", my_id, local_error);
     }
     // Send largest list value to process with rank (my_id+1)
-    if (my_id+1 < num_procs) {
-        MPI_Send(&my_min, 1, MPI_INT, my_id+1, tag, MPI_COMM_WORLD);
+   if (my_id+1 < num_procs) {
+	    MPI_Send(&my_min, 1, MPI_INT, my_id+1, tag, MPI_COMM_WORLD);
         // Good practice to check status!
     }
     // Collect errors from all processes
