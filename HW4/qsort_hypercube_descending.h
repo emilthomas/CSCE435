@@ -74,7 +74,7 @@ void check_list(int *list, int list_size, int my_id, int num_procs) {
     // (error is set to 1 if a pair of elements is not sorted correctly)
     local_error = 0;
     if (list_size > 0) {
-	    if (list[0] > min_nbr) { local_error = 1; printf("DDDDDDDDD, %d, %d\n\n\n", list[0], min_nbr);}
+	    if (list[0] > min_nbr) { local_error = 1; }
 	    for (j = 1; j < list_size; j++){
 	        if (list[j] > list[j-1]) local_error = 1;
 	    }
