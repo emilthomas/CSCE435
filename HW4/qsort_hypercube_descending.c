@@ -9,7 +9,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include "mpi.h"
-#include "qsort_hypercube.h"
+#include "qsort_hypercube_decending.h"
 
 #define MAX_LIST_SIZE_PER_PROC    268435456
 
