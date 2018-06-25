@@ -268,10 +268,10 @@ int main(int argc, char *argv[])
         
         if (nbr_k > my_id) {
             // MPI-2: Send number of elements less than the pivot
-            MPI_Send(&list_size_leq, 1, MPI_INT, nbr_k, 0, sub_hypercube_comm);
+            MPI_Send(&list_size_leq, 1, MPI_INT, nbr_k, 0, MPI_COMM_WORLD);
             
             // MPI-3: Receive number of elements greater than the pivot
-            MPI_Recv(&nbr_list_size, 1, MPI_INT, nbr_k, 0, sub_hypercube_comm, MPI_STATUS_IGNORE);
+            MPI_Recv(&nbr_list_size, 1, MPI_INT, nbr_k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             
             // ***** Add MPI call here *****
             
@@ -279,10 +279,10 @@ int main(int argc, char *argv[])
             nbr_list = (int *) calloc(nbr_list_size, sizeof(int));
             
             // MPI-4: Send list[idx ... list_size-1] to neighbor
-            MPI_Send(&list[idx], list_size_leq, MPI_INT, nbr_k, 0, sub_hypercube_comm);
+            MPI_Send(&list[idx], list_size_leq, MPI_INT, nbr_k, 0, MPI_COMM_WORLD);
             
             // MPI-5: Receive neighbor's list of elements that are greater than the pivot
-            MPI_Recv(nbr_list, nbr_list_size, MPI_INT, nbr_k, 0, sub_hypercube_comm, MPI_STATUS_IGNORE);
+            MPI_Recv(nbr_list, nbr_list_size, MPI_INT, nbr_k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             
             // Merge local list of elements less than or equal to pivot with neighbor's list
             new_list = merged_list(list, idx, nbr_list, nbr_list_size);
@@ -295,19 +295,19 @@ int main(int argc, char *argv[])
         } else {
             
             // MPI-6: Receive number of elements less than or equal to the pivot
-            MPI_Recv(&nbr_list_size, 1, MPI_INT, nbr_k, 0, sub_hypercube_comm, MPI_STATUS_IGNORE);
+            MPI_Recv(&nbr_list_size, 1, MPI_INT, nbr_k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             
             // MPI-7: Send number of elements greater than the pivot
-            MPI_Send(&list_size_gt, 1, MPI_INT, nbr_k, 0, sub_hypercube_comm);
+            MPI_Send(&list_size_gt, 1, MPI_INT, nbr_k, 0, MPI_COMM_WORLD);
             
             // Allocate storage for neighbor's list
             nbr_list = (int *) calloc(nbr_list_size, sizeof(int));
             
             // MPI-8: Receive neighbor's list of elements that are greater than the pivot
-            MPI_Recv(nbr_list, nbr_list_size, MPI_INT, nbr_k, 0, sub_hypercube_comm, MPI_STATUS_IGNORE);
+            MPI_Recv(nbr_list, nbr_list_size, MPI_INT, nbr_k, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             
             // MPI-9: Send list[0 ... idx-1] to neighbor
-            MPI_Send(list, list_size_gt, MPI_INT, nbr_k, 0, sub_hypercube_comm);
+            MPI_Send(list, list_size_gt, MPI_INT, nbr_k, 0, MPI_COMM_WORLD);
             
             // Merge local list of elements greater than pivot with neighbor's list
             new_list = merged_list(&list[idx], list_size_gt, nbr_list, nbr_list_size);
